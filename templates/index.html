@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PhishGuard AI | URL Security Scanner</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+    <script
+        src="{{ url_for('static', filename='script.js') }}"
+        defer
+    ></script>
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="/" class="brand">🛡️ PhishGuard AI</a>
+        <span class="badge">ML-Powered Detection</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">SMARTER URL ANALYSIS</p>
+
+            <h1>Think Before You <span>Click.</span></h1>
+
+            <p class="subtitle">
+                Analyze a URL with machine learning and identify
+                characteristics commonly associated with phishing.
+            </p>
+        </section>
+
+        <section class="scanner">
+            <form method="POST" id="url-form">
+                <label for="url">Enter a website URL</label>
+
+                <div class="input-row">
+                    <input
+                        type="text"
+                        id="url"
+                        name="url"
+                        placeholder="https://example.com"
+                        value="{{ submitted_url }}"
+                        maxlength="2048"
+                        required
+                    >
+
+                    <button type="submit" id="scan-button">
+                        Analyze URL
+                    </button>
+                </div>
+
+                <p class="helper">
+                    We analyze URL characteristics without visiting
+                    the submitted website.
+                </p>
+            </form>
+
+            {% if error %}
+                <div class="message error" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            {% if result %}
+                <section
+                    class="result-card {% if result.prediction == 1 %}danger{% else %}caution{% endif %}"
+                    aria-live="polite"
+                >
+                    <p class="result-eyebrow">ANALYSIS RESULT</p>
+
+                    <h2>
+                        {% if result.prediction == 1 %}
+                            ⚠️ Potential Phishing
+                        {% else %}
+                            🔎 Likely Legitimate
+                        {% endif %}
+                    </h2>
+
+                    <p class="analyzed-url">{{ result.url }}</p>
+
+                    <p class="disclaimer">
+                        This is a machine learning prediction, not
+                        a guarantee of safety. Treat unfamiliar links
+                        cautiously, even if classified as legitimate.
+                    </p>
+
+                    <h3>URL warning indicators</h3>
+
+                    {% if result.warnings %}
+                        <ul class="warning-list">
+                            {% for warning in result.warnings %}
+                                <li>{{ warning }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>
+                            No warning indicators from our basic
+                            checks were detected. This does not
+                            establish that the URL is safe.
+                        </p>
+                    {% endif %}
+                </section>
+            {% endif %}
+        </section>
+
+        <section class="info-grid">
+            <article class="info-card">
+                <span class="icon">🧠</span>
+                <h3>Machine Learning</h3>
+                <p>
+                    A Random Forest classifier learns patterns from
+                    labeled URL examples.
+                </p>
+            </article>
+
+            <article class="info-card">
+                <span class="icon">🔍</span>
+                <h3>Feature Analysis</h3>
+                <p>
+                    URL length, hostname structure, and other
+                    characteristics help inform predictions.
+                </p>
+            </article>
+
+            <article class="info-card">
+                <span class="icon">🔐</span>
+                <h3>Security Awareness</h3>
+                <p>
+                    Learn to recognize potential warning signs
+                    before clicking unfamiliar links.
+                </p>
+            </article>
+        </section>
+
+        <footer>
+            <p>
+                PhishGuard AI is an educational prototype.
+                It cannot guarantee that a website is safe or malicious.
+            </p>
+        </footer>
+    </main>
+</body>
+</html>
